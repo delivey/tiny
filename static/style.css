@@ -1,0 +1,17 @@
+body {
+    background: black;
+    color: white;
+    font-family: "Open Sans";
+}
+
+.main {
+    margin-top: 7vh;
+    display:block
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.title {
+    font-size: 5rem;
+}
