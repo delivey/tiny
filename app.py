@@ -18,7 +18,21 @@ def original():
 
 def generate_url():
     length = 7
-    return ''.join([choice(ascii_uppercase + ascii_lowercase) for char in range(length)])
+    return "u" + ''.join([choice(ascii_uppercase + ascii_lowercase) for char in range(length)])
+
+@app.route("/u<code>", methods=["GET"])
+def get(code):
+    conn = psycopg2.connect(
+        host=os.getenv("POSTGRES_HOST"),
+        database=os.getenv("POSTGRES_DATABASE"),
+        user=os.getenv("POSTGRES_USER"),
+        password=os.getenv("POSTGRES_PASSWORD")
+    )
+    db = conn.cursor()
+
+    db.execute("SELECT original FROM urls WHERE new=%s", ("u"+code,))
+    original = db.fetchone()[0]
+    return redirect(original)
 
 @app.route("/api/shorten", methods=["POST"])
 def shorten():
@@ -34,14 +48,13 @@ def shorten():
         user=os.getenv("POSTGRES_USER"),
         password=os.getenv("POSTGRES_PASSWORD")
     )
-    print(data)
-
     db = conn.cursor()
+
     new = generate_url()
     original = data["url"]
-    print(original)
-    print(new)
+
     db.execute("INSERT INTO urls (new, original) VALUES (%s, %s)", (new, original))
+
     conn.commit()
     conn.close()
     return redirect("/")
