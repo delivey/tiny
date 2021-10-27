@@ -1,10 +1,13 @@
 import psycopg2
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 conn = psycopg2.connect(
-    host="localhost",
-    database="postgres",
-    user="postgres",
-    password="q"
+    host=os.getenv("POSTGRES_HOST"),
+    database=os.getenv("POSTGRES_DATABASE"),
+    user=os.getenv("POSTGRES_USER"),
+    password=os.getenv("POSTGRES_PASSWORD")
 )
 
 db = conn.cursor()
